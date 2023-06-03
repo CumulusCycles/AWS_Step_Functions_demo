@@ -1,2 +1,2 @@
 # AWS_Step_Functions_demo
-Code for the AWS Step Functions demo video.
+Code for the AWS Step Functions demo [video](https://www.youtube.com/watch?v=CVTpXi8Hx1c&list=PLRBkbp6t5gM0cJwCiPZzo1ahZ6M5wHHU1&index=24).
