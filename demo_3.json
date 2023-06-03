@@ -1,0 +1,55 @@
+{
+    "Comment": "Demo 3",
+    "StartAt": "Begin",
+    "States": {
+        "Begin": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:264546059187:function:demo-function",
+            "Next": "CheckRespose"
+        },
+
+        "CheckRespose": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.statusCode",
+                    "StringEquals": "200",
+                    "Next": "Success"
+                },
+                {
+                    "Variable": "$.statusCode",
+                    "StringEquals": "403",
+                    "Next": "Fail"
+                }
+            ],
+            "Default": "Default"
+        },
+
+        "Success": {
+            "Type": "Pass",
+            "Result": {
+                "status": 200,
+                "message": "Success!"
+            },
+            "End": true
+        },
+
+        "Fail": {
+            "Type": "Pass",
+            "Result": {
+                "status": 200,
+                "message": "Fail."
+            },
+            "End": true
+        },
+
+        "Default": {
+            "Type": "Pass",
+            "Result": {
+                "status": 200,
+                "message": "Default"
+            },
+            "End": true
+        }
+    }
+}

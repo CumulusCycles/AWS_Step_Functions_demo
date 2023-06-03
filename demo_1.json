@@ -1,0 +1,13 @@
+{
+    "Comment":"Demo 1",
+    "StartAt":"Begin",
+    "States":{
+      "Begin":{
+        "Type":"Pass",
+        "Result":{
+          "message":"Hello from AWS Step Function Demo 1!"
+        },
+        "End":true
+      }
+    }
+  }

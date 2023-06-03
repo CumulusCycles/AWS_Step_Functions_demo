@@ -1,0 +1,66 @@
+{
+    "Comment": "Demo 5",
+    "StartAt": "Begin",
+    "States": {
+        "Begin": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:264546059187:function:demo-function",
+            "Next": "CheckRespose",
+            "Retry": [ {
+                "ErrorEquals": ["States.TaskFailed"],
+                "IntervalSeconds": 1,
+                "MaxAttempts": 2,
+                "BackoffRate": 2.0
+             } ],
+            "Catch":[
+                {
+                "ErrorEquals": ["Exception"],
+                "Next":"InternalServerError"
+                }
+            ]
+        },
+
+        "CheckRespose": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.statusCode",
+                    "StringEquals": "200",
+                    "Next": "Success"
+                },
+                {
+                    "Variable": "$.statusCode",
+                    "StringEquals": "403",
+                    "Next": "Fail"
+                }
+            ]
+        },
+
+        "Success": {
+            "Type": "Pass",
+            "Result": {
+                "status": 200,
+                "message": "Success!"
+            },
+            "End": true
+        },
+
+        "Fail": {
+            "Type": "Pass",
+            "Result": {
+                "status": 200,
+                "message": "Fail."
+            },
+            "End": true
+        },
+
+        "InternalServerError": {
+            "Type": "Pass",
+            "Result": {
+                "status": 200,
+                "message": "InternalServerError"
+            },
+            "End": true
+        }
+    }
+}
