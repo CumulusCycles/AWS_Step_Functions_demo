@@ -1,0 +1,92 @@
+{
+  "Comment": "Demo",
+  "StartAt": "GetObject",
+  "States": {
+    "GetObject": {
+      "Type": "Task",
+      "Parameters": {
+        "Bucket.$": "$.detail.bucket.name",
+        "Key.$": "$.detail.object.key"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:s3:getObject",
+      "Next": "ProcessOrderData",
+      "ResultSelector": {
+        "detail.$": "States.StringToJson($.Body)"
+      }
+    },
+    "ProcessOrderData": {
+      "Type": "Map",
+      "InputPath": "$.detail",
+      "ItemsPath": "$.orders",
+      "MaxConcurrency": 2,
+      "Iterator": {
+        "StartAt": "ProcessData",
+        "States": {
+          "ProcessData": {
+            "Type": "Task",
+            "Resource": "YOUR_LAMBDA_FUNCTION_ARN",
+            "Next": "ProcessOrder",
+            "ResultSelector": {
+              "contact-info.$": "$.contact-info",
+              "order-info.$": "$.order-info"
+            },
+            "Catch": [
+              {
+                "ErrorEquals": [
+                  "States.TaskFailed"
+                ],
+                "Next": "PublishToSQS",
+                "ResultPath": null
+              }
+            ]
+          },
+          "ProcessOrder": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::dynamodb:putItem",
+            "Parameters": {
+              "TableName": "YOUR_DYNAMODB_TABLE_NAME",
+              "Item": {
+                "OrderId": {
+                  "S.$": "$.order-info.OrderId"
+                },
+                "item-id": {
+                  "S.$": "$.order-info.item-id"
+                },
+                "qty": {
+                  "S.$": "$.order-info.qty"
+                },
+                "contact-name": {
+                  "S.$": "$.contact-info.name"
+                },
+                "contact-email": {
+                  "S.$": "$.contact-info.email"
+                }
+              }
+            },
+            "Retry": [
+              {
+                "ErrorEquals": [
+                  "States.TaskFailed"
+                ],
+                "IntervalSeconds": 1,
+                "MaxAttempts": 2,
+                "BackoffRate": 2
+              }
+            ],
+            "End": true
+          },
+          "PublishToSQS": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::sqs:sendMessage",
+            "Parameters": {
+              "QueueUrl": "YOUR_SQS_QUEUE_URL",
+              "MessageBody.$": "$"
+            },
+            "End": true
+          }
+        }
+      },
+      "End": true
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+    "orders": [
+        {
+            "contact-info": {
+                "name": "Foo Bar",
+                "email": "foobar@test.com"
+            },
+            "order-info": {
+                "OrderId": "1",
+                "item-id": "101",
+                "item-desc": "Item One",
+                "qty": "1"
+            }
+        },
+        {
+            "order-info": {
+                "orderId": "2",
+                "item-id": "102",
+                "item-desc": "Item Two",
+                "qty": "3"
+            }
+        }
+    ]
+}
