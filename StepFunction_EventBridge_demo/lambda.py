@@ -6,4 +6,4 @@ def lambda_handler(event, context):
         return event
     else:
         print("ERROR: Contact Info not found!")
-        raise Exception("ContactIntoNotFound")
+        raise Exception("ContactInfoNotFound")

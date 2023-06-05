@@ -1,10 +1,9 @@
 {
-    "detail-type": [ "Object Created"],
-    "source": ["aws.s3"],
-    "detail": {
-      "bucket": {
-        "name": ["YOUR_BUCKET_NAME"]
-      }
+  "detail-type": ["Object Created"],
+  "source": ["aws.s3"],
+  "detail": {
+    "bucket": {
+      "name": ["YOUR_BUCKET_NAME"]
     }
   }
-  
+}

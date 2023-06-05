@@ -1,14 +1,14 @@
 {
   "Comment": "Demo",
-  "StartAt": "GetObject",
+  "StartAt": "GetOrderData",
   "States": {
-    "GetObject": {
+    "GetOrderData": {
       "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:s3:getObject",
       "Parameters": {
         "Bucket.$": "$.detail.bucket.name",
         "Key.$": "$.detail.object.key"
       },
-      "Resource": "arn:aws:states:::aws-sdk:s3:getObject",
       "Next": "ProcessOrderData",
       "ResultSelector": {
         "detail.$": "States.StringToJson($.Body)"
@@ -32,9 +32,7 @@
             },
             "Catch": [
               {
-                "ErrorEquals": [
-                  "States.TaskFailed"
-                ],
+                "ErrorEquals": ["States.TaskFailed"],
                 "Next": "PublishToSQS",
                 "ResultPath": null
               }
@@ -65,9 +63,7 @@
             },
             "Retry": [
               {
-                "ErrorEquals": [
-                  "States.TaskFailed"
-                ],
+                "ErrorEquals": ["States.TaskFailed"],
                 "IntervalSeconds": 1,
                 "MaxAttempts": 2,
                 "BackoffRate": 2
